@@ -3,7 +3,7 @@ import requests
 import uuid
 
 st.set_page_config(page_title="RAG Chatbot | Knowledge Assistant", page_icon="📚", layout="centered")
-WEBHOOK_URL = "https://minahil111.app.n8n.cloud/webhook/3d417e7b-f21a-48ca-bcc8-04a52e239ebe/chats"
+WEBHOOK_URL = "https://minahil111.app.n8n.cloud/webhook/3d417e7b-f21a-48ca-bcc8-04a52e239ebe/chat"
 
 st.markdown("""
 <style>
