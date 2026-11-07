@@ -8,9 +8,8 @@ st.set_page_config(
 )
 
 # --- APNA WEBHOOK YAHAN DALO ---
-WEBHOOK_URL = "APNA_N8N_WEBHOOK_YAHAN_PASTE_KARO"
+WEBHOOK_URL = "https://minahil111.app.n8n.cloud/webhook/3d417e7b-f21a-48ca-bcc8-04a52e239ebe/chat"
 
-# --- CLEAN CSS ---
 st.markdown("""
 <style>
     .main { background-color: #ffffff; }
@@ -26,36 +25,72 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- HEADER ---
 st.markdown("""
 <div class="title-box">
     <h2>📚 Knowledge Assistant</h2>
-    <p>Organizational Analysis • Safety Procedures • Employee Training</p>
+    <p>NASA Safety • Employee Training • Organizational Analysis</p>
 </div>
 """, unsafe_allow_html=True)
 
-# --- SIDEBAR ---
+# --- SIDEBAR - VIDEO WALA REAL DATA ---
 with st.sidebar:
     st.header("About This Project")
-    st.write("This chatbot answers only from your uploaded documents. It does not answer from Google or general knowledge.")
-    
+    st.write("This chatbot answers only from the documents stored in Qdrant Database. It does not use Google or general knowledge.")
+
     st.divider()
-    st.subheader("What You Can Ask")
+    st.subheader("📄 What's in Database")
+
     st.markdown("""
-    **1. Organizational Analysis**
-    Questions related to organizational structure, roles, and analysis process.
-
-    **2. Safety Procedures & Compliance**
-    Questions related to safety rules, procedures, and compliance requirements.
-
-    **3. Employee Training Program**
-    Questions related to how to create, manage, and improve employee training programs.
-    """)
+    **1. NASA Safety & Health Programs Manual (NPR 8715.1B)**
+    This document covers NASA's official Policy and Regulations for Safety & Health.
+    It explains how NASA manages critical risks, institutional safety, and a safe working environment.
     
+    **Topics Covered:**
+    - Institutional Safety Office & its role
+    - Operational Rules: Fire protection, high-risk operations, toxic materials handling
+    - Roles & Responsibilities: Who has authority to manage risks?
+    
+    **Try Asking:**
+    - "What is NASA's policy on facility fire protection?"
+    - "Who is responsible for institutional safety programs according to NPR 8715.1B?"
+    """)
+
+    st.divider()
+    st.markdown("""
+    **2. TalentLMS Employee Training Guide (HR Manual)**
+    This document is a complete guide for Human Resources (HR) and Corporate Training.
+    It explains how to design training programs and onboard new employees in a company.
+
+    **Topics Covered:**
+    - Onboarding Steps: How to train new employees
+    - Training Methods: Blended learning, online training, classroom setups
+    - Checklists & Frameworks: Step-by-step training manual
+
+    **Try Asking:**
+    - "What are the key steps to create an employee training manual?"
+    - "How does the guide define blended learning for new hires?"
+    """)
+
+    st.divider()
+    st.markdown("""
+    **3. Smartsheet Organizational Analysis Template (Business Strategy)**
+    This document is for Business Management and Strategic Planning.
+    It helps an organization analyze its current performance and plan for future goals.
+
+    **Topics Covered:**
+    - Strategic Frameworks: Mission, Vision, and current performance analysis
+    - Tables & Blank Fields: To track business goals, budgets, and timelines
+    - Barriers & Solutions: How to identify problems and fix them
+
+    **Try Asking:**
+    - "What is the purpose of an organizational analysis template?"
+    - "How does the document structure the tracking of business goals and timelines?"
+    """)
+
     st.divider()
     st.caption("Tech Stack: n8n • OpenAI • Qdrant • Streamlit")
     st.caption("Developed by Minahil Ashfaq")
-    
+
     if st.button("Clear Chat"):
         st.session_state.messages = []
         st.rerun()
@@ -63,7 +98,7 @@ with st.sidebar:
 # --- CHAT ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
-    st.session_state.messages.append({"role": "assistant", "content": "Hello! 👋 You can ask me anything related to Organizational Analysis, Safety Procedures, and Employee Training Program."})
+    st.session_state.messages.append({"role": "assistant", "content": "Hello! 👋 Ask me anything about NASA Safety (NPR 8715.1B), TalentLMS Employee Training, or Organizational Analysis."})
 
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
@@ -87,6 +122,5 @@ if prompt:
             st.markdown(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
 
-
-          
   
+    
