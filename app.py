@@ -8,7 +8,7 @@ st.set_page_config(
 )
 
 # --- APNA WEBHOOK YAHAN DALO ---
-WEBHOOK_URL = "APNA_N8N_WEBHOOK_YAHAN_PASTE_KARO"
+WEBHOOK_URL = "https://minahil111.app.n8n.cloud/webhook/3d417e7b-f21a-48ca-bcc8-04a52e239ebe/chat"
 
 st.markdown("""
 <style>
