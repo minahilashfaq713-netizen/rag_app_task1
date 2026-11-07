@@ -2,13 +2,13 @@ import streamlit as st
 import requests
 
 st.set_page_config(
-    page_title="RAG Chatbot | Organizational & Training Docs",
+    page_title="RAG Chatbot | Knowledge Assistant",
     page_icon="📚",
     layout="centered"
 )
 
 # --- APNA WEBHOOK YAHAN DALO ---
-WEBHOOK_URL = "https://minahil111.app.n8n.cloud/webhook/3d417e7b-f21a-48ca-bcc8-04a52e239ebe/chat"
+WEBHOOK_URL = "APNA_N8N_WEBHOOK_YAHAN_PASTE_KARO"
 
 # --- CLEAN CSS ---
 st.markdown("""
@@ -34,50 +34,42 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# --- SIDEBAR - SIRF KAAM KI CHEEZ ---
+# --- SIDEBAR ---
 with st.sidebar:
     st.header("About This Project")
-    st.write("Ye chatbot sirf neeche diye gaye 3 documents se jawab deta hai. Google se jawab nahi deta.")
+    st.write("This chatbot answers only from your uploaded documents. It does not answer from Google or general knowledge.")
     
     st.divider()
-    st.subheader("📄 Documents in Database")
+    st.subheader("What You Can Ask")
     st.markdown("""
-    **1. Organizational Analysis Template**
-    Organization ka structure, roles aur analysis kaise karte hain.
+    **1. Organizational Analysis**
+    Questions related to organizational structure, roles, and analysis process.
 
-    **2. N_PR_8715_001B - Chapter 4**
-    Safety, procedures aur compliance ke rules.
+    **2. Safety Procedures & Compliance**
+    Questions related to safety rules, procedures, and compliance requirements.
 
-    **3. TalentLMS - Employee Training**
-    Employee training program kaise banate hain aur manage karte hain.
-    """)
-    
-    st.divider()
-    st.subheader("💡 Kya Pooch Sakte Ho?")
-    st.markdown("""
-    - Organizational analysis ka process kya hai?
-    - Chapter 4 me safety ke kya rules hain?
-    - Employee training ke liye best steps kya hain?
+    **3. Employee Training Program**
+    Questions related to how to create, manage, and improve employee training programs.
     """)
     
     st.divider()
     st.caption("Tech Stack: n8n • OpenAI • Qdrant • Streamlit")
     st.caption("Developed by Minahil Ashfaq")
     
-    if st.button("🗑️ Chat Clear Karo"):
+    if st.button("Clear Chat"):
         st.session_state.messages = []
         st.rerun()
 
 # --- CHAT ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
-    st.session_state.messages.append({"role": "assistant", "content": "Assalam-o-Alaikum! 👋 Me aap ke 3 documents - Organizational Analysis, Chapter 4 aur Employee Training - se jawab dunga. Koi sawal poochein."})
+    st.session_state.messages.append({"role": "assistant", "content": "Hello! 👋 You can ask me anything related to Organizational Analysis, Safety Procedures, and Employee Training Program."})
 
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-prompt = st.chat_input("Apna sawal yahan likhein...")
+prompt = st.chat_input("Type your question here...")
 
 if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
@@ -85,7 +77,7 @@ if prompt:
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        with st.spinner("Documents me dhoond raha hun..."):
+        with st.spinner("Searching in documents..."):
             try:
                 res = requests.post(WEBHOOK_URL, json={"question": prompt}, timeout=60)
                 data = res.json()
@@ -94,4 +86,7 @@ if prompt:
                 answer = f"Error: {e}"
             st.markdown(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
+
+
+          
   
