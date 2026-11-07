@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import uuid
 
 st.set_page_config(
     page_title="RAG Chatbot | Knowledge Assistant",
