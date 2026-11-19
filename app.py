@@ -1,76 +1,50 @@
 import streamlit as st
 import requests
-import uuid
 
-st.set_page_config(page_title="RAG Chatbot | Knowledge Assistant", page_icon="📚", layout="centered")
-WEBHOOK_URL = "https://minahil111.app.n8n.cloud/webhook/3d417e7b-f21a-48ca-bcc8-04a52e239ebe/chat"
+st.set_page_config(page_title="PDF Chatbot", page_icon="📄")
+st.title("📄 PDF Chatbot")
+st.write("PDF اپلوڈ کرو، پھر اس سے سوال پوچھو - ٹو دی پوائنٹ جواب ملے گا۔")
 
-st.markdown("""
-<style>
-    .title-box { background: linear-gradient(90deg, #0f2027 0%, #203a43 50%, #2c5364 100%); padding: 22px; border-radius: 12px; color: white; text-align: center; margin-bottom: 20px; }
-    .title-box p { color: #d1d5db; font-size: 14px; }
-</style>
-""", unsafe_allow_html=True)
-
-st.markdown("""<div class="title-box"><h2>📚 Knowledge Assistant</h2><p>NASA Safety • Employee Training • Organizational Analysis</p></div>""", unsafe_allow_html=True)
-
-with st.sidebar:
-    st.header("About This Project")
-    st.write("This chatbot answers only from the documents stored in the database. It does not use Google or general knowledge.")
-    st.divider()
-    st.subheader("What You Can Ask")
-    st.markdown("""
-    **1. NASA Safety & Health Programs**
-    Ask about safety policies, fire protection, and institutional safety rules.
-
-    **2. Employee Training**
-    Ask about onboarding, training methods, and creating training manuals.
-
-    **3. Organizational Analysis**
-    Ask about business strategy, goals tracking, and performance analysis.
-    """)
-    st.divider()
-    st.caption("Tech Stack: n8n • OpenAI • Qdrant • Streamlit")
-    st.caption("Developed by Minahil Ashfaq")
-    if st.button("Clear Chat"):
-        st.session_state.messages = []
-        st.session_state.session_id = str(uuid.uuid4())
-        st.rerun()
-
-if "session_id" not in st.session_state:
-    st.session_state.session_id = str(uuid.uuid4())
+# 👇 یہاں اپنی n8n والی Production URL ڈالو
+N8N_URL = "YAHAN APNI N8N PRODUCTION URL PASTE KARO"
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
-    st.session_state.messages.append({"role": "assistant", "content": "Hello! 👋 Ask me anything about NASA Safety, Employee Training, or Organizational Analysis."})
 
+# 1. فائل اپلوڈ والا حصہ
+uploaded_file = st.file_uploader("PDF فائل یہاں اپلوڈ کرو", type=["pdf"])
+
+if uploaded_file and st.button("فائل n8n میں بھیجو"):
+    with st.spinner("فائل Qdrant میں جا رہی ہے..."):
+        files = {"data": (uploaded_file.name, uploaded_file.getvalue(), "application/pdf")}
+        data = {"chatInput": "file upload"}
+        res = requests.post(N8N_URL, files=files, data=data)
+        if res.status_code == 200:
+            st.success("فائل مل گئی ہے، یاد کر لی ہے۔ اب سوال پوچھو۔")
+        else:
+            st.error(f"ایرر آ گیا: {res.text}")
+
+st.divider()
+
+# 2. چیٹ والا حصہ
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
+        st.write(msg["content"])
 
-prompt = st.chat_input("Type your question here...")
-
-if prompt:
+if prompt := st.chat_input("اپنا سوال لکھو..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
-        st.markdown(prompt)
+        st.write(prompt)
+
     with st.chat_message("assistant"):
-        with st.spinner("Searching in documents..."):
+        with st.spinner("سوچ رہا ہوں..."):
             try:
-                # Chat Trigger ke liye sahi format
-                payload = {
-                    "action": "sendMessage",
-                    "sessionId": st.session_state.session_id,
-                    "chatInput": prompt
-                }
-                res = requests.post(WEBHOOK_URL, json=payload, timeout=120)
-                data = res.json()
-                # n8n Chat Trigger aksar "output" deta hai
-                answer = data.get("output") or data.get("text") or data.get("response") or str(data)
+                res = requests.post(N8N_URL, json={"chatInput": prompt}, timeout=60)
+                reply = res.json().get("output", "جواب نہیں آیا")
+                st.write(reply)
+                st.session_state.messages.append({"role": "assistant", "content": reply})
             except Exception as e:
-                answer = f"Error: {e}"
-            st.markdown(answer)
-            st.session_state.messages.append({"role": "assistant", "content": answer})
+                st.error(f"ایرر: {e}")
 
 
   
